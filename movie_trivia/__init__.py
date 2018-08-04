@@ -25,7 +25,7 @@ def handleIntent(sessionId, intentString, slots):
         query = extractQueryFromSlots(slots)
         movieId = retrieveMostRelevantMovieIdFromQuery(query)
         if movieId is None:
-            return getReplyForNoMovieFound()
+            return getReplyForNoMovieFound(query)
 
         movieData = None
         if (intent is Intents.PLOT

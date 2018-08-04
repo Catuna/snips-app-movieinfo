@@ -1,8 +1,8 @@
 from intents import Intents
 
 
-def getReplyForNoMovieFound():
-    raise Exception('Not implemented')
+def getReplyForNoMovieFound(query):
+    return 'Sorry, I was not able to find the movie \'{}\''.format(query)
 
 
 def getReplyForSpecificMovieQuery(movieData, intent):
