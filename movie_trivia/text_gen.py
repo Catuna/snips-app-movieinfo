@@ -1,36 +1,40 @@
 from intents import Intents
 
 
-def getReplyForSpecificMediaQuery(media, intent):
+def getReplyForNoMovieFound():
+    raise Exception('Not implemented')
+
+
+def getReplyForSpecificMovieQuery(movieData, intent):
     if intent is Intents.CAST:
-        return getMediaCastReply(media)
+        return getMovieCastReply(movieData)
     elif intent is Intents.DIRECTOR:
-        return getMediaDirectorReply(media)
+        return getMovieDirectorReply(movieData)
     elif intent is Intents.PLOT:
-        return getMediaPlotReply(media)
+        return getMoviePlotReply(movieData)
     elif intent is Intents.RELEASE:
-        return getMediaReleaseReply(media)
+        return getMovieReleaseReply(movieData)
 
 
-def getMediaCastReply(mediaData):
+def getMovieCastReply(movieData):
     raise Exception('Not implemented')
 
 
-def getMediaDirectorReply(mediaData):
+def getMovieDirectorReply(movieData):
     raise Exception('Not implemented')
 
 
-def getMediaPlotReply(mediaData):
+def getMoviePlotReply(movieData):
     raise Exception('Not implemented')
 
 
-def getMediaRuntimeReply(mediaData):
+def getMovieRuntimeReply(movieData):
     raise Exception('Not implemented')
 
 
-def getMediaReleaseReply(mediaData):
+def getMovieReleaseReply(movieData):
     raise Exception('Not implemented')
 
 
-def getReplyForSuggestedMovie(mediaData):
+def getReplyForSuggestedMovie(movieData):
     raise Exception('Not implemented')

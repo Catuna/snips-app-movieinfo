@@ -1,7 +1,10 @@
 from intents import Intents
-from text_gen import (getReplyForSpecificMediaQuery,
-                      getReplyForSuggestedMovie)
-from data_retrieval import (retrieveMostRelevantMediaFromQuery,
+from text_gen import (getReplyForSpecificMovieQuery,
+                      getReplyForSuggestedMovie,
+                      getReplyForNoMovieFound)
+from data_retrieval import (retrieveMostRelevantMovieIdFromQuery,
+                            retrieveMovieCredits,
+                            retrieveMovieInfo,
                             retrieveRandomGoodMovieFromGenres)
 from snipshelpers.intent_helper import (getFirstBySlotName, getAllBySlotName)
 
@@ -20,8 +23,20 @@ def handleIntent(sessionId, intentString, slots):
 
     if isIntentSpecificMovieQuery(intent):
         query = extractQueryFromSlots(slots)
-        movie = retrieveMostRelevantMediaFromQuery(query)
-        return getReplyForSpecificMediaQuery(movie, intent)
+        movieId = retrieveMostRelevantMovieIdFromQuery(query)
+        if movieId is None:
+            return getReplyForNoMovieFound()
+
+        movieData = None
+        if (intent is Intents.PLOT
+           or intent is Intents.RUNTIME
+           or intent is Intents.RELEASE):
+            movieData = retrieveMovieInfo(movieId)
+        elif (intent is Intents.DIRECTOR
+              or intent is Intents.CAST):
+            movieData = retrieveMovieCredits(movieId)
+
+        return getReplyForSpecificMovieQuery(movieData, intent)
     else:
         if intent is Intents.SUGGESTION:
             genres = extractGenresFromSlots(slots)

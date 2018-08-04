@@ -3,16 +3,23 @@ import tmdbsimple as tmdb
 tmdb.API_KEY = '3f5e463e7b648ef4b2d6f884a81b044f'
 
 
-def retrieveMostRelevantMediaFromQuery(query):
+def retrieveMovieCredits(movieId):
+    creditsResponse = tmdb.Movies(movieId).credits()
+    return creditsResponse
+
+
+def retrieveMovieInfo(movieId):
+    castResponse = tmdb.Movies(movieId).info()
+    return castResponse
+
+
+def retrieveMostRelevantMovieIdFromQuery(query):
     search = tmdb.Search()
     searchResponse = search.movie(query=query)
 
     if searchResponse['total_results'] == 0:
         return None
-    bestMatchId = searchResponse['results'][0]['id']
-
-    movieResponse = tmdb.Movies(bestMatchId).info()
-    return movieResponse
+    return searchResponse['results'][0]['id']
 
 
 def retrieveRandomGoodMovieFromGenres(genres):
