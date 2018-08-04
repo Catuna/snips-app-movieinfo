@@ -4,7 +4,8 @@ import json
 import time
 import paho.mqtt.client as mqtt
 
-from movie_trivia.app import MovieTriviaApp
+from movie_trivia import handleIntent
+from movie_trivia.intents import Intents
 
 
 LOGGER_CONF = 'logger_conf.json'
@@ -14,17 +15,21 @@ MQTT_IP_ADDR = "raspberrypi.local"
 MQTT_PORT = 1883
 MQTT_ADDR = "{}:{}".format(MQTT_IP_ADDR, str(MQTT_PORT))
 
+HERMES_TOPIC_PREFIX = 'hermes/intent/'
+HERMES_TOPIC_PREFIX_LENGTH = 14
+
 skill = None
 
 
 def onMessage(client, userData, message):
     logger = logging.getLogger(APP_LOGGER)
     payload = json.loads(message.payload)
+    intent = message.topic[HERMES_TOPIC_PREFIX_LENGTH:]
 
     try:
-        skill.handleIntent(payload['sessionId'],
-                           message.topic,
-                           payload['slots'])
+        handleIntent(payload['sessionId'],
+                     intent,
+                     payload['slots'])
     except Exception:
         logger.exception('Failed to answer query')
 
@@ -34,7 +39,9 @@ def onConnect(client, userData, flags, rc):
     logger.info('Connected to MQTT broker')
 
     try:
-        pass
+        for intent in Intents:
+            hermesTopic = HERMES_TOPIC_PREFIX + intent.value
+            client.subscribe(hermesTopic)
     except Exception:
         logger.exception('Failed subscribing to topic')
 
@@ -60,13 +67,6 @@ if __name__ == '__main__':
         mqttCli.loop_start()
     except Exception:
         logger.exception('Failed to initialize MQTT connection')
-        exit(-1)
-
-    logger.info('Movie Trivia app initializing')
-    try:
-        app = MovieTriviaApp(mqttCli)
-    except Exception:
-        logger.exception('Failed to initialize app')
         exit(-1)
 
     shouldStop = False
