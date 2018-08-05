@@ -1,38 +1,53 @@
 from intents import Intents
 
+MAX_PERSONS_LISTED = 4
+
 
 def getReplyForNoMovieFound(query):
-    return 'Sorry, I was not able to find the movie \'{}\''.format(query)
+    return 'I was not able to find the movie \'{}\''.format(query)
 
 
-def getReplyForSpecificMovieQuery(movieData, intent):
+def getReplyForSpecificMovieQuery(movieName, movieData, intent):
     if intent is Intents.CAST:
-        return getMovieCastReply(movieData)
+        return getMovieCastReply(movieName, movieData)
     elif intent is Intents.DIRECTOR:
-        return getMovieDirectorReply(movieData)
+        return getMovieDirectorReply(movieName, movieData)
     elif intent is Intents.PLOT:
-        return getMoviePlotReply(movieData)
+        return getMoviePlotReply(movieName, movieData)
     elif intent is Intents.RELEASE:
-        return getMovieReleaseReply(movieData)
+        return getMovieReleaseReply(movieName, movieData)
 
 
-def getMovieCastReply(movieData):
+def getMovieCastReply(movieName, movieData):
+    if 'cast' not in movieData:
+        return 'I could not find the cast of {}'.format(movieName)
+
+    reply = 'Starring in {}: '.format(movieName)
+    castCount = 0
+    for person in movieData['cast']:
+        if castCount == MAX_PERSONS_LISTED:
+            break
+        if castCount == MAX_PERSONS_LISTED-1:
+            reply += 'and '
+        reply += '{}, '.format(person['name'])
+        castCount += 1
+
+    return reply
+
+
+def getMovieDirectorReply(movieName, movieData):
     raise Exception('Not implemented')
 
 
-def getMovieDirectorReply(movieData):
+def getMoviePlotReply(movieName, movieData):
     raise Exception('Not implemented')
 
 
-def getMoviePlotReply(movieData):
+def getMovieRuntimeReply(movieName, movieData):
     raise Exception('Not implemented')
 
 
-def getMovieRuntimeReply(movieData):
-    raise Exception('Not implemented')
-
-
-def getMovieReleaseReply(movieData):
+def getMovieReleaseReply(movieName, movieData):
     raise Exception('Not implemented')
 
 

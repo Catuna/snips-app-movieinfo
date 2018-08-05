@@ -27,9 +27,14 @@ def onMessage(client, userData, message):
     intent = message.topic[HERMES_TOPIC_PREFIX_LENGTH:]
 
     try:
-        handleIntent(payload['sessionId'],
-                     intent,
-                     payload['slots'])
+        response = handleIntent(payload['sessionId'],
+                                intent,
+                                payload['slots'])
+        client.publish('hermes/dialogueManager/endSession',
+                       json.dumps({
+                            'sessionId': payload['sessionId'],
+                            'text': response
+                       }))
     except Exception:
         logger.exception('Failed to answer query')
 

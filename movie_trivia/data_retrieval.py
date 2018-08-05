@@ -13,13 +13,13 @@ def retrieveMovieInfo(movieId):
     return castResponse
 
 
-def retrieveMostRelevantMovieIdFromQuery(query):
+def retrieveMostRelevantMovieFromQuery(query):
     search = tmdb.Search()
     searchResponse = search.movie(query=query)
 
     if searchResponse['total_results'] == 0:
         return None
-    return searchResponse['results'][0]['id']
+    return searchResponse['results'][0]
 
 
 def retrieveRandomGoodMovieFromGenres(genres):

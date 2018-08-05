@@ -2,7 +2,7 @@ from intents import Intents
 from text_gen import (getReplyForSpecificMovieQuery,
                       getReplyForSuggestedMovie,
                       getReplyForNoMovieFound)
-from data_retrieval import (retrieveMostRelevantMovieIdFromQuery,
+from data_retrieval import (retrieveMostRelevantMovieFromQuery,
                             retrieveMovieCredits,
                             retrieveMovieInfo,
                             retrieveRandomGoodMovieFromGenres)
@@ -23,20 +23,20 @@ def handleIntent(sessionId, intentString, slots):
 
     if isIntentSpecificMovieQuery(intent):
         query = extractQueryFromSlots(slots)
-        movieId = retrieveMostRelevantMovieIdFromQuery(query)
-        if movieId is None:
+        movie = retrieveMostRelevantMovieFromQuery(query)
+        if movie is None:
             return getReplyForNoMovieFound(query)
 
-        movieData = None
+        extraData = None
         if (intent is Intents.PLOT
            or intent is Intents.RUNTIME
            or intent is Intents.RELEASE):
-            movieData = retrieveMovieInfo(movieId)
+            extraData = retrieveMovieInfo(movie['id'])
         elif (intent is Intents.DIRECTOR
               or intent is Intents.CAST):
-            movieData = retrieveMovieCredits(movieId)
+            extraData = retrieveMovieCredits(movie['id'])
 
-        return getReplyForSpecificMovieQuery(movieData, intent)
+        return getReplyForSpecificMovieQuery(movie['title'], extraData, intent)
     else:
         if intent is Intents.SUGGESTION:
             genres = extractGenresFromSlots(slots)
